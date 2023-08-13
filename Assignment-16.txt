@@ -1,0 +1,79 @@
+CREATE DATABASE store;
+USE store;
+CREATE TABLE countries (
+    code INT PRIMARY KEY,
+    name VARCHAR(20) UNIQUE NOT NULL,
+    continent_name VARCHAR(20) NOT NULL
+);
+CREATE TABLE users (
+    id int PRIMARY KEY,
+    email VARCHAR(20) UNIQUE NOT NULL,
+    gender CHAR(1) CHECK (gender IN ('m', 'f')),
+     date_of_birth varchar(15),
+    created_at datetime default current_timestamp,
+    country_code int ,
+    foreign key (country_code) references countries(code)
+);
+
+create table orders (
+    id int  primary key,
+    user_id int,
+    foreign key (user_id) references users(id),
+    status varchar(6) check (status in ('start', 'finish')),
+    created_at datetime default current_timestamp
+);
+
+create table products (
+    id int primary key,
+    name varchar(10) not null,
+    price int default 0,
+    status varchar(10) check (status in ('valid', 'expired')),
+    created_at datetime default current_timestamp
+);
+create table order_products (
+    order_id int,
+    product_id int,
+    quantity int default 0,
+    foreign key (order_id) references orders(id),
+    foreign key (product_id) references products(id)
+);
+
+alter table orders
+alter column created_at set default current_timestamp;
+
+insert into countries (code,name, continent_name)
+values (21595,'Saudi Arabia', 'Asia');
+
+-- Add new row to the "users" table
+insert into users (id,email, gender,date_of_birth,country_code)
+values (1,'bakr@gmail.com', 'm','2000-3-10',21595);
+
+-- Add new row to the "orders" table
+insert into orders (id, user_id,status)
+values (1,1,'start');
+
+
+-- Add new row to the "products" table
+insert into products (id,name, price, status)
+values (1,'Laptop', 999, 'valid');
+
+-- Add new row to the "order_products" table
+insert into order_products (order_id, product_id, quantity)
+values (1, 1, 2);
+
+select * from countries;
+
+-- Update row in the "countries" table
+update countries
+set continent_name = 'Middle East'
+where name = 'Saudi Arabia';
+
+select * from products;
+
+
+delete from order_products
+where product_id=1;
+
+-- Delete row from the "products" table
+delete from products
+where id = 1;
